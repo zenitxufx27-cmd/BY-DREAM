@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Princess Surprise ✨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724; /* deep night */
+      --card:#0b1220;
+      --accent:#ff7cc8;
+      --accent2:#7ce7ff;
+      --glass: rgba(255,255,255,0.06);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Montserrat,system-ui,Arial;background:radial-gradient(circle at 10% 10%, rgba(255,124,200,0.06), transparent 10%), linear-gradient(180deg, #061021 0%, var(--bg) 100%);color:#fff}
+
+    .stage{
+      min-height:100vh;display:grid;place-items:center;padding:30px;
+    }
+
+    .card{
+      width:980px;max-width:95%;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:20px;padding:28px;box-shadow:0 10px 40px rgba(7,14,25,0.7);position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.03);
+      display:grid;grid-template-columns:1fr 420px;gap:24px;align-items:center;
+    }
+
+    .left{
+      padding:18px;
+    }
+
+    h1{font-size:38px;margin:0 0 8px;letter-spacing:-0.5px}
+    p.lead{opacity:0.9;margin:0 0 18px}
+
+    .cta{display:flex;gap:12px;align-items:center}
+    .btn{padding:12px 18px;border-radius:12px;background:linear-gradient(90deg,var(--accent),#ffb3ea);border:none;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(255,124,200,0.14);}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);font-weight:600}
+
+    .preview{
+      height:420px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:18px;backdrop-filter: blur(6px);
+    }
+
+    .balloon{
+      position:absolute;left:0;right:0;margin:auto;bottom:-120px;width:180px;height:220px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:linear-gradient(180deg,var(--accent),var(--accent2));transform-origin:center bottom;box-shadow:0 12px 30px rgba(0,0,0,0.45);display:grid;place-items:center;font-weight:800;font-size:18px}
+
+    .string{position:absolute;bottom:-5px;height:160px;width:2px;background:linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0.06));left:50%;transform:translateX(-50%)}
+
+    /* floating animation */
+    @keyframes floatup{0%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-18px) rotate(6deg)}100%{transform:translateY(-360px) rotate(-6deg)}}
+    .balloon.fly{animation:floatup 4s cubic-bezier(.18,.9,.39,1) forwards}
+
+    /* confetti canvas sits top */
+    canvas.confetti{position:absolute;inset:0;pointer-events:none}
+
+    /* hearts */
+    .hearts{position:absolute;inset:0;pointer-events:none}
+    .heart{position:absolute;width:28px;height:26px;background:linear-gradient(180deg,#ff7cc8,#ffb3ea);transform:rotate(-45deg);border-radius:6px 6px 0 0;opacity:0.95}
+    .heart::after,.heart::before{content:'';position:absolute;background:inherit;border-radius:50%;}
+    .heart::before{width:28px;height:28px;left:0;top:-14px}
+    .heart::after{width:28px;height:28px;left:14px;top:0}
+
+    /* reveal message */
+    .message{
+      font-size:22px;padding:18px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));backdrop-filter: blur(4px);border:1px solid rgba(255,255,255,0.03)
+    }
+
+    .footer-note{font-size:13px;opacity:0.8;margin-top:12px}
+
+    /* small responsive */
+    @media (max-width:880px){.card{grid-template-columns:1fr;gap:12px}.preview{height:320px}.balloon{width:140px;height:170px}}
+
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="card">
+      <div class="left">
+        <h1>For my Princess ✨</h1>
+        <p class="lead">A tiny surprise made with love. Click <strong>Open Surprise</strong> and enjoy the animation, music and confetti — then customize the message to make it yours.</p>
+
+        <div class="cta">
+          <button id="openBtn" class="btn">Open Surprise</button>
+          <button id="nextBtn" class="btn secondary">Next ➜</button>
+          <button id="saveBtn" class="btn secondary">Download HTML</button>
+        </div>"saveBtn" <div style="margin-top:18px" class="message" id="messageBox">Click the button to reveal a special message...</div>
+        <div class="message" id="loveLetter" style="display:none; margin-top:16px; font-size:20px; line-height:1.5;">
+          <strong>💖 My Heart Letter for You 💖</strong><br><br>
+          My Princess,<br>
+          Every moment with you feels like magic. You are the softness in my day, the spark in my smile, and the warmth in my heart. I adore you more than words can ever say. This little surprise is just a tiny piece of the love I hold for you — infinite, gentle and forever yours. 💕<br><br>
+          — With all my heart
+        </div>age...</div>
+        <div class="footer-note">Tip: Change the text inside <code>#messageBox</code> in the HTML to personalize it.</div>
+      </div>
+
+      <div class="preview" id="preview">
+        <canvas class="confetti" id="confettiCanvas"></canvas>
+        <div class="hearts" id="hearts"></div>
+
+        <div class="balloon" id="balloon">
+          <div style="text-align:center">👑</div>
+          <div class="string"></div>
+        </div>
+      </div>
+    </div>
+<script>
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    function resize(){canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight}
+    new ResizeObserver(resize).observe(canvas);
+    function random(min,max){return Math.random()*(max-min)+min}
+    class Particle{constructor(x,y,color){this.x=x;this.y=y;this.vx=random(-2,2);this.vy=random(-6,-2);this.size=random(6,12);this.color=color;this.gravity=0.12;this.life=100}
+      update(){this.vy+=this.gravity;this.x+=this.vx;this.y+=this.vy;this.life--}
+      draw(){ctx.fillStyle=this.color;ctx.fillRect(this.x,this.y,this.size,this.size)} }
+    let particles=[];
+    function emit(x,y,count=25){const colors=['#ff7cc8','#ffd6f0','#7ce7ff','#fff29b','#ffc4a3']; for(let i=0;i<count;i++){particles.push(new Particle(x,y,colors[Math.floor(Math.random()*colors.length)]))}}
+    function frame(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach((p,i)=>{p.update();p.draw(); if(p.life<=0||p.y>canvas.height+50) particles.splice(i,1)});requestAnimationFrame(frame)} frame();
+
+    const heartsEl = document.getElementById('hearts');
+    function spawnHeart(){const h=document.createElement('div');h.className='heart';
+      const size = Math.floor(random(18,34)); h.style.width=size+'px'; h.style.height=(size-6)+'px';
+      h.style.left = Math.floor(random(5,95))+'%'; h.style.bottom = '-40px';
+      const dur = random(3500,7000);
+      h.style.opacity = Math.random()*0.9+0.2;
+      heartsEl.appendChild(h);
+      h.animate([{transform:'translateY(0) rotate(-15deg)', opacity:0},{transform:'translateY(-420px) rotate(20deg)', opacity:1}],{duration:dur, easing:'cubic-bezier(.2,.8,.2,1)'});
+      setTimeout(()=>h.remove(), dur+200);}    
+
+    const audio = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_f3c4a6523a.mp3'); audio.volume = 0.55;
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let ctxAudio = null;
+    function playMelody(){if(!ctxAudio) ctxAudio = new AudioCtx(); const now = ctxAudio.currentTime;
+      const notes=[523.25,659.25,783.99,1046.5];
+      notes.forEach((f,i)=>{ const o=ctxAudio.createOscillator(); const g=ctxAudio.createGain(); o.type='sine'; o.frequency.value=f; g.gain.value=0.0001;
+        o.connect(g); g.connect(ctxAudio.destination);
+        o.start(now+i*0.22); g.gain.linearRampToValueAtTime(0.15, now+i*0.22+0.02); g.gain.exponentialRampToValueAtTime(0.001, now+i*0.22+0.38); o.stop(now+i*0.22+0.5); }); }
+
+    const openBtn=document.getElementById('openBtn');
+    const nextBtn=document.getElementById('nextBtn');
+    const balloon=document.getElementById('balloon');
+    const messageBox=document.getElementById('messageBox');
+    const loveLetter=document.getElementById('loveLetter');
+    let opened=false;
+
+    openBtn.addEventListener('click',()=>{
+      if(opened) return; opened=true;
+      balloon.classList.add('fly');
+      const rect=canvas.getBoundingClientRect(); emit(rect.width/2, rect.height*0.3, 120);
+      for(let i=0;i<18;i++) setTimeout(spawnHeart, i*160);
+      setTimeout(()=>{ messageBox.innerHTML='<strong>Happy Surprise, my Princess 🌸</strong><br>May your day be as lovely as you — with hugs, kisses and endless magic.'; },900);
+      playMelody(); audio.play();
+    });
+
+    nextBtn.addEventListener('click',()=>{
+      loveLetter.style.display='block';
+      emit(canvas.width/2, canvas.height*0.3, 80);
+      for(let i=0;i<10;i++) setTimeout(spawnHeart, i*140);
+    });
+
+    openBtn.addEventListener('keyup',(e)=>{ if(e.key==='Enter') openBtn.click(); });
+  </script>
+  </script>
+
+  <!--
+    How to personalize:
+    - Edit the message inside the <div id="messageBox"> to your custom note.
+    - Replace the emoji in the balloon with an image: put an <img> tag inside .balloon and style it.
+    - Tweak colors in :root for a different palette.
+    - Use the Download button to save this file and send it or open locally.
+  -->
+</body>
+</html>
