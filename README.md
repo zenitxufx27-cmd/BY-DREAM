@@ -1,2 +1,0 @@
-# BY-DREAM
-To Ridhima
